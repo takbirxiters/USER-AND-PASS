@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Token Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            width: 500px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #5865F2;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background: #0f3460;
+            border: 2px solid #1a1a4e;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-family: 'Consolas', monospace;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #5865F2;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #5865F2;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.secondary {
+            background: #e94560;
+        }
+
+        .btn.secondary:hover {
+            background: #c23152;
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0f3460;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aaa;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .info strong {
+            color: #5865F2;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .status.success {
+            display: block;
+            background: #1a4731;
+            color: #4caf50;
+        }
+
+        .status.error {
+            display: block;
+            background: #471a1a;
+            color: #f44336;
+        }
+
+        .user-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: #0f3460;
+            border-radius: 8px;
+            display: none;
+            text-align: left;
+        }
+
+        .user-info.show {
+            display: block;
+        }
+
+        .user-info img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .user-info .username {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .user-info .tag {
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎮</div>
+        <h1>Discord Token Login</h1>
+        <p class="subtitle">Enter your Discord token to login instantly</p>
+
+        <div class="input-group">
+            <label>Discord Token</label>
+            <textarea id="tokenInput" placeholder="Paste your Discord token here...&#10;Example: MTAwMzgxNjQ2OTI4NTk2MzEwOA.XXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXX"></textarea>
+        </div>
+
+        <button class="btn" onclick="loginWithToken()">
+            🚀 Login with Token
+        </button>
+        <button class="btn secondary" onclick="loginViaConsole()">
+            🔧 Login via Console Method
+        </button>
+        <button class="btn" onclick="getUserInfo()" style="background: #ff9800;">
+            📋 Check Token Info First
+        </button>
+
+        <div class="status" id="status"></div>
+
+        <div class="user-info" id="userInfo">
+            <img id="avatar" src="" alt="Avatar">
+            <p class="username" id="username"></p>
+            <p class="tag" id="discriminator"></p>
+            <p id="email"></p>
+            <p id="phone"></p>
+            <p id="id"></p>
+            <p id="nitro"></p>
+        </div>
+
+        <div class="info">
+            <strong>📌 How to get your token:</strong><br>
+            1. Open Discord in browser (discord.com/app)<br>
+            2. Press <strong>Ctrl + Shift + I</strong> (Developer Tools)<br>
+            3. Go to <strong>Console</strong> tab<br>
+            4. Paste this and press Enter:<br>
+            <code style="background:#1a1a2e; padding:2px 6px; border-radius:3px; color:#5865F2;">
+                (webpackChunkdiscord_app.push([[''],{},e=>{m=[];for(let c in e.c)m.push(e.c[c])}]),m).find(m=>m?.exports?.default?.getToken!==void 0).exports.default.getToken()
+            </code><br>
+            5. Copy the token that appears<br><br>
+            <strong>⚠️ Never share your token with anyone!</strong>
+        </div>
+    </div>
+
+    <script>
+        async function loginWithToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const status = document.getElementById('status');
+            
+            if (!token) {
+                showStatus('Please enter a token!', 'error');
+                return;
+            }
+
+            // Method 1: Direct login URL
+            showStatus('Logging in...', 'success');
+            
+            // Try to set token in localStorage and redirect
+            try {
+                // Set token in multiple storage types
+                localStorage.setItem('token', JSON.stringify(token));
+                sessionStorage.setItem('token', JSON.stringify(token));
+                
+                // Also set as cookie
+                document.cookie = `token=${token}; path=/; domain=.discord.com`;
+                
+                // Redirect to Discord
+                setTimeout(() => {
+                    window.location.href = 'https://discord.com/login?token=' + encodeURIComponent(token);
+                }, 1000);
+                
+                showStatus('Redirecting to Discord...', 'success');
+            } catch (e) {
+                showStatus('Error: ' + e.message, 'error');
+            }
+        }
+
+        function loginViaConsole() {
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (!token) {
+                showStatus('Please enter a token first!', 'error');
+                return;
+            }
+
+            const script = `
+                (function() {
+                    function login(token) {
+                        setInterval(() => {
+                            document.body.appendChild(document.createElement('iframe')).contentWindow.localStorage.token = '"' + token + '"';
+                        }, 50);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2500);
+                    }
+                    login('${token}');
+                })();
+            `;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(script).then(() => {
+                showStatus('✅ Script copied! Now: 1. Go to discord.com 2. Open Console (F12) 3. Paste and Enter', 'success');
+                
+                // Open Discord in new tab
+                setTimeout(() => {
+                    window.open('https://discord.com/login', '_blank');
+                }, 1500);
+            }).catch(() => {
+                showStatus('Failed to copy. Please copy manually from console.', 'error');
+                console.log(script);
+            });
+        }
+
+        async function getUserInfo() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const status = document.getElementById('status');
+            const userInfo = document.getElementById('userInfo');
+            
+            if (!token) {
+                showStatus('Please enter a token!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://discord.com/api/v9/users/@me', {
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Invalid token or rate limited');
+                }
+
+                const user = await response.json();
+                
+                document.getElementById('avatar').src = user.avatar 
+                    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
+                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+                
+                document.getElementById('username').textContent = user.username;
+                document.getElementById('discriminator').textContent = '#' + user.discriminator;
+                document.getElementById('email').textContent = '📧 Email: ' + (user.email || 'Hidden');
+                document.getElementById('phone').textContent = '📱 Phone: ' + (user.phone || 'Not set');
+                document.getElementById('id').textContent = '🆔 ID: ' + user.id;
+                
+                // Check Nitro
+                const nitroResponse = await fetch('https://discord.com/api/v9/users/@me/billing/subscriptions', {
+                    headers: { 'Authorization': token }
+                });
+                const nitro = await nitroResponse.json();
+                document.getElementById('nitro').textContent = '💎 Nitro: ' + (nitro.length > 0 ? 'YES ✅' : 'No ❌');
+                
+                userInfo.classList.add('show');
+                showStatus('✅ Token is valid!', 'success');
+                
+                // Also save valid token
+                localStorage.setItem('valid_token', token);
+                
+            } catch (error) {
+                userInfo.classList.remove('show');
+                showStatus('❌ Invalid token or network error: ' + error.message, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            
+            setTimeout(() => {
+                status.className = 'status';
+            }, 5000);
+        }
+
+        // Auto-check saved token on load
+        window.onload = function() {
+            const savedToken = localStorage.getItem('valid_token');
+            const urlToken = new URLSearchParams(window.location.search).get('token');
+            
+            if (urlToken) {
+                document.getElementById('tokenInput').value = urlToken;
+                getUserInfo();
+            } else if (savedToken) {
+                document.getElementById('tokenInput').value = savedToken;
+            }
+        };
+    </script>
+</body>
+</html>
